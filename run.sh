@@ -32,10 +32,10 @@ if [ ! -f "$(pwd)/server.jar" ]; then
                 [yY][eE][sS])
                     if command -v sudo &>/dev/null; then
                         sudo apt update -y
-                        sudo apt install openjdk-11-jre -y
+                        sudo apt install openjdk-21-jre -y
                     else
                         apt update -y
-                        apt install openjdk-11-jre -y
+                        apt install openjdk-21-jre -y
                     fi
                     break
                     ;;
