@@ -37,7 +37,6 @@ if [ ! -f "$(pwd)/server.jar" ]; then
                         apt update -y
                         apt install openjdk-21-jre -y
                     fi
-                    break
                     ;;
                 [nN][oO])
                     echo -e "\nJava is required to run the Minecraft server. Aborting...\n"
