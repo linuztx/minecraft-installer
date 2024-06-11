@@ -7,6 +7,7 @@ This repository contains a Bash script for simplifying the installation and setu
 Before using the script, ensure that the following dependencies are installed:
 
 - `wget`: Used for downloading server files from the internet.
+- 'curl': For checking latest server files
 - `linux`: Debian base operating system.
 
 ## Usage
