@@ -33,6 +33,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
                     if command -v sudo &>/dev/null; then
                         sudo apt update -y
                         sudo apt install openjdk-21-jre -y
+                        echo ""
                     else
                         apt update -y
                         apt install openjdk-21-jre -y
