@@ -26,6 +26,20 @@ if [ ! -f "$(pwd)/server.jar" ]; then
                 echo ""
             fi
     fi
+
+    if ! command -v jq &>/dev/null; then
+        echo -e "\nCurl is not installed. Installing...\n"
+            if command -v sudo &>/dev/null; then
+                sudo apt update
+                sudo apt install -y jq
+                echo ""
+            else
+                apt update
+                apt install -y jq
+                echo ""
+            fi
+    fi
+
     # Fetch the latest release version from the version manifest
     latest=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r '.latest.release')
 
@@ -34,6 +48,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
 
     # Fetch the server download URL from the version manifest
     latest_server=$(curl -fsSL "$manifest_url" | jq -r '.downloads.server.url')
+
     while true; do
         if command -v java &>/dev/null; then
             read -p "Enter your Minecraft server download link (latest:$latest): " server
