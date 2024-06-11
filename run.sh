@@ -36,6 +36,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
                     else
                         apt update -y
                         apt install openjdk-21-jre -y
+                        echo ""
                     fi
                     ;;
                 [nN][oO])
