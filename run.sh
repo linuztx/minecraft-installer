@@ -27,7 +27,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
             read -p "Enter your Minecraft server download link (latest:$latest): " server
             server=${server:-"$latest_server"}
             echo -e "\nDownloading start...\n"
-            wget -O "$(pwd)/server.jar" "$server"
+            curl -o "$(pwd)/server.jar" "$server"
             if [ $? -eq 0 ]; then
                 echo -e "\nMinecraft server.jar successfully installed!\n"
             else
