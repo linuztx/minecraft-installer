@@ -51,7 +51,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
 
     while true; do
         if command -v java &>/dev/null; then
-            read -p "Enter your Minecraft server download link (latest:$latest): " server
+            read -p "Enter your Minecraft server download link (default latest: $latest): " server
             server=${server:-"$latest_server"}
             echo -e "\nDownloading start...\n"
             curl -o "$(pwd)/server.jar" "$server"
