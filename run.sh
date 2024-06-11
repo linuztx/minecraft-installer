@@ -6,6 +6,15 @@
 # This script downloads and install Minecraft server with ease
 # Made for Minecraft players
 
+# Fetch the latest release version from the version manifest
+latest=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r '.latest.release')
+
+# Fetch the URL for the version manifest of the latest release
+manifest_url=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r --arg LATEST "$latest" '.versions[] | select(.id == $LATEST) | .url')
+
+# Fetch the server download URL from the version manifest
+latest_server=$(curl -fsSL "$manifest_url" | jq -r '.downloads.server.url')
+
 # Check if server.jar exists; if not, download it
 if [ ! -f "$(pwd)/server.jar" ]; then
     echo "=================================================="
@@ -15,8 +24,8 @@ if [ ! -f "$(pwd)/server.jar" ]; then
     echo "=================================================="
     while true; do
         if command -v java &>/dev/null; then
-            read -p "Enter your Minecraft server download link (default:1.20.6): " server
-            server=${server:-"https://piston-data.mojang.com/v1/objects/145ff0858209bcfc164859ba735d4199aafa1eea/server.jar"}
+            read -p "Enter your Minecraft server download link (latest:$latest): " server
+            server=${server:-"$latest_server"}
             echo -e "\nDownloading start...\n"
             wget -O "$(pwd)/server.jar" "$server"
             if [ $? -eq 0 ]; then
@@ -76,11 +85,11 @@ echo "                @Copyright 2024                   "
 echo "=================================================="
 echo "           Starting Minecraft Server              "
 echo "=================================================="
-read -p "How much GB of RAM would you like to use for your Minecraft server? (default 1GB, numeric input only): " ram
-ram=${ram:-'1'}
+read -p "How much maximum GB of RAM would you like to use for your Minecraft server? (default 1GB, numeric input only): " max_ram
+max_ram=${max_ram:-'1'}
 echo ""
 
-java -Xmx${ram}G -Xms${ram}G -jar server.jar nogui
+java -Xmx${max_ram}G -Xms1G -jar server.jar nogui
 
 # Provide feedback on server start
 if [ $? -eq 0 ]; then
