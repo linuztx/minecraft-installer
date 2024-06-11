@@ -6,14 +6,6 @@
 # This script downloads and install Minecraft server with ease
 # Made for Minecraft players
 
-# Fetch the latest release version from the version manifest
-latest=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r '.latest.release')
-
-# Fetch the URL for the version manifest of the latest release
-manifest_url=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r --arg LATEST "$latest" '.versions[] | select(.id == $LATEST) | .url')
-
-# Fetch the server download URL from the version manifest
-latest_server=$(curl -fsSL "$manifest_url" | jq -r '.downloads.server.url')
 
 # Check if server.jar exists; if not, download it
 if [ ! -f "$(pwd)/server.jar" ]; then
@@ -22,6 +14,26 @@ if [ ! -f "$(pwd)/server.jar" ]; then
     echo "=================================================="
     echo "                @Copyright 2024                   "
     echo "=================================================="
+    if ! command -v curl &>/dev/null; then
+        echo -e "\nCurl is not installed. Installing...\n"
+            if command -v sudo &>/dev/null; then
+                sudo apt update
+                sudo apt install -y curl
+                echo ""
+            else
+                apt update
+                apt install -y curl
+                echo ""
+            fi
+    fi
+    # Fetch the latest release version from the version manifest
+    latest=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r '.latest.release')
+
+    # Fetch the URL for the version manifest of the latest release
+    manifest_url=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r --arg LATEST "$latest" '.versions[] | select(.id == $LATEST) | .url')
+
+    # Fetch the server download URL from the version manifest
+    latest_server=$(curl -fsSL "$manifest_url" | jq -r '.downloads.server.url')
     while true; do
         if command -v java &>/dev/null; then
             read -p "Enter your Minecraft server download link (latest:$latest): " server
@@ -58,6 +70,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
                     ;;
             esac
         fi
+
     done
 fi
 
