@@ -28,7 +28,7 @@ if [ ! -f "$(pwd)/server.jar" ]; then
     fi
 
     if ! command -v jq &>/dev/null; then
-        echo -e "\nCurl is not installed. Installing...\n"
+        echo -e "\nJq is not installed. Installing...\n"
             if command -v sudo &>/dev/null; then
                 sudo apt update
                 sudo apt install -y jq
