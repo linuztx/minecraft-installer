@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### CREATED BY @Linuztuxx ####
+### CREATED BY @Linuztx ####
 ### Minecraft Server Installer ###
 ### 2024 ###
 # This script downloads and install Minecraft server with ease
