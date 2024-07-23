@@ -7,7 +7,11 @@ This repository contains a Bash script for simplifying the installation and setu
 Before using the script, ensure that the following dependencies are installed:
 
 - `curl`: Used for downloading server files from the internet.
-- `linux`: Debian base operating system.
+- `jq`: Used for parsing JSON data.
+- `autossh`: Optional, used for secure remote port forwarding.
+- `tmux`: Optional, used for managing server sessions.
+- `java`: Required to run the Minecraft server. OpenJDK 21 or later is recommended.
+- `linux`: Debian-based operating system (e.g., Ubuntu).
 
 ## Usage
 
@@ -18,11 +22,14 @@ To use the script, simply execute the `run.sh` file. The script will prompt you 
 - Simplified Minecraft server installation process.
 - Automatic downloading of server files.
 - Customizable RAM allocation for the server.
+- Customizable server properties, including world name, game mode, difficulty and online mode.
+- Optional support for secure remote port forwarding using `autossh` and server session management using `tmux`.
 
 ## Limitations
 
 - Currently supports only vanilla Minecraft server installations.
 - Does not support server configuration beyond basic setup.
+- Requires java to be installed; if not present, the script will prompt for installation.
 
 ## Installation
 
