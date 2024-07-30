@@ -7,10 +7,7 @@ This repository contains a Bash script for simplifying the installation and setu
 Before using the script, ensure that the following dependencies are installed:
 
 - `curl`: Used for downloading server files from the internet.
-- `jq`: Used for parsing JSON data.
-- `autossh`: Optional, used for secure remote port forwarding.
-- `tmux`: Optional, used for managing server sessions.
-- `java`: Required to run the Minecraft server. OpenJDK 21 or later is recommended.
+- `java`: Required to run the Minecraft server. OpenJDK 21 is recommended.
 - `linux`: Debian-based operating system (e.g., Ubuntu).
 
 ## Usage
@@ -36,7 +33,7 @@ To use the script, simply execute the `run.sh` file. The script will prompt you 
 To use this script, you need to clone the repository, navigate to the directory, make the script executable, and then run it. Here are the commands you need to run:
 
 ```shellscript
-git clone https://github.com/linuztuxx/minecraft-installer.git
+git clone https://github.com/linuztx/minecraft-installer.git
 cd minecraft-installer
 chmod +x run.sh
 ./run.sh
