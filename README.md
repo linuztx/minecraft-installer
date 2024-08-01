@@ -8,7 +8,7 @@ Before using the script, ensure that the following dependencies are installed:
 
 - `curl`: Used for downloading server files from the internet.
 - `java`: Required to run the Minecraft server. OpenJDK 21 is recommended.
-- `linux`: Debian-based operating system (e.g., Ubuntu).
+- `linux` or `macOS`: The script supports Debian-based systems, Alpine Linux, and macOS.
 
 ## Usage
 
