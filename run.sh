@@ -4,7 +4,7 @@
 ### Minecraft Server Installer ###
 ### Copyright (C) 2024 ###
 # This script downloads, installs the Minecraft server, and starts it in a tmux session.
-# Supports Debian-based systems, Alpine Linux, Fedora, and macOS.
+# Supports Debian-based systems, Alpine Linux, Fedora, Arch, and macOS.
 
 # Function to install packages for Debian-based systems
 install_debian_packages() {
@@ -93,7 +93,7 @@ elif command -v pacman &>/dev/null; then
 elif command -v brew &>/dev/null; then
     install_macos_packages
 else
-    echo -e "\nUnsupported operating system. This script supports Debian-based systems, Alpine Linux, Fedora, and macOS only.\n"
+    echo -e "\nUnsupported operating system. This script supports Debian-based systems, Alpine Linux, Fedora, Arch and macOS only.\n"
     exit 1
 fi
 
