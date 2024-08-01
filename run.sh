@@ -93,7 +93,7 @@ elif command -v pacman &>/dev/null; then
 elif command -v brew &>/dev/null; then
     install_macos_packages
 else
-    echo -e "\nUnsupported operating system. This script supports Debian-based systems, Alpine Linux, and Fedora.\n"
+    echo -e "\nUnsupported operating system. This script supports Debian-based systems, Alpine Linux, Fedora, and macOS only.\n"
     exit 1
 fi
 
