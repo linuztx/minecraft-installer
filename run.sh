@@ -4,7 +4,7 @@
 ### Minecraft Server Installer ###
 ### Copyright (C) 2024 ###
 # This script downloads, installs the Minecraft server, and starts it in a tmux session.
-# Supports Debian-based systems, Alpine Linux, and Fedora. Requires curl, jq, autossh, and tmux.
+# Supports Debian-based systems, Alpine Linux, Fedora, and macOS.
 
 # Function to install packages for Debian-based systems
 install_debian_packages() {
