@@ -8,7 +8,7 @@
 
 # Function to install packages for Debian-based systems
 install_debian_packages() {
-    local packages=(curl jq autossh tmux java-21-openjdk)
+    local packages=(curl jq autossh tmux openjdk-21-jdk)
     for package in "${packages[@]}"; do
         if ! command -v "$package" &>/dev/null; then
             echo -e "\n$package is not installed. Installing...\n"
