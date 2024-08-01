@@ -65,6 +65,22 @@ install_arch_packages() {
     done
 }
 
+# Function to install packages for macOS
+install_macos_packages() {
+    local packages=(curl jq autossh tmux openjdk)
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null; then
+            echo -e "\n$package is not installed. Installing...\n"
+            if command -v brew &>/dev/null; then
+                brew install "$package"
+            else
+                echo -e "\nHomebrew is not installed. Please install Homebrew first.\n"
+                exit 1
+            fi
+        fi
+    done
+}
+
 # Determine the package manager and install required packages
 if command -v apk &>/dev/null; then
     install_alpine_packages
@@ -74,6 +90,8 @@ elif command -v dnf &>/dev/null; then
     install_fedora_packages
 elif command -v pacman &>/dev/null; then
     install_arch_packages
+elif command -v brew &>/dev/null; then
+    install_macos_packages
 else
     echo -e "\nUnsupported operating system. This script supports Debian-based systems, Alpine Linux, and Fedora.\n"
     exit 1
