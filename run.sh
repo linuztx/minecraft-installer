@@ -1,10 +1,83 @@
 #!/bin/env bash
 
-### CREATED BY @Linuztx ####
+### CREATED BY @linuztx ####
 ### Minecraft Server Installer ###
 ### Copyright (C) 2024 ###
-# This script downloads install the Minecraft server and starts it in a tmux session.
-# Made for Debian-based systems. Requires curl, jq, autossh, and tmux.
+# This script downloads, installs the Minecraft server, and starts it in a tmux session.
+# Supports Debian-based systems, Alpine Linux, and Fedora. Requires curl, jq, autossh, and tmux.
+
+# Function to install packages for Debian-based systems
+install_debian_packages() {
+    local packages=(curl jq autossh tmux java-21-openjdk)
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null; then
+            echo -e "\n$package is not installed. Installing...\n"
+            if command -v sudo &>/dev/null; then
+                sudo apt install -y "$package"
+            else
+                apt install -y "$package"
+            fi
+        fi
+    done
+}
+
+# Function to install packages for Alpine Linux
+install_alpine_packages() {
+    local packages=(curl jq autossh tmux openjdk21-jre)
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null; then
+            echo -e "\n$package is not installed. Installing...\n"
+            if command -v sudo &>/dev/null; then
+                sudo apk add --no-interactive"$package"
+            else
+                apk add "$package"
+            fi
+        fi
+    done
+}
+
+# Function to install packages for Fedora
+install_fedora_packages() {
+    local packages=(curl jq autossh tmux java-21-openjdk)
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null; then
+            echo -e "\n$package is not installed. Installing...\n"
+            if command -v sudo &>/dev/null; then
+                sudo dnf install -y "$package"
+            else
+                dnf install -y "$package"
+            fi
+        fi
+    done
+}
+
+install_arch_packages() {
+    local packages=(curl jq autossh tmux jdk21-openjdk)
+    for package in "${packages[@]}"; do
+        if ! command -v "$package" &>/dev/null; then
+            echo -e "\n$package is not installed. Installing...\n"
+            if command -v sudo &>/dev/null; then
+                sudo pacman -S --noconfirm "$package"
+            else
+                pacman -S --noconfirm "$package"
+            fi
+        fi
+    done
+}
+
+# Determine the package manager and install required packages
+if command -v apk &>/dev/null; then
+    install_alpine_packages
+elif command -v apt &>/dev/null; then
+    install_debian_packages
+elif command -v dnf &>/dev/null; then
+    install_fedora_packages
+elif command -v pacman &>/dev/null; then
+    install_arch_packages
+else
+    echo -e "\nUnsupported operating system. This script supports Debian-based systems, Alpine Linux, and Fedora.\n"
+    exit 1
+fi
 
 # Check if server.jar exists; if not, download it
 if [ ! -f "$(pwd)/server.jar" ]; then
@@ -13,58 +86,8 @@ if [ ! -f "$(pwd)/server.jar" ]; then
     echo "=================================================="
     echo "                Copyright (C) 2024                "
     echo "=================================================="
-    if ! command -v curl &>/dev/null; then
-        echo -e "\nCurl is not installed. Installing...\n"
-        if command -v sudo &>/dev/null; then
-            sudo apt update
-            sudo apt install -y curl
-            echo ""
-        else
-            apt update
-            apt install -y curl
-            echo ""
-        fi
-    fi
-
-    if ! command -v jq &>/dev/null; then
-        echo -e "\nJq is not installed. Installing...\n"
-        if command -v sudo &>/dev/null; then
-            sudo apt update
-            sudo apt install -y jq
-            echo ""
-        else
-            apt update
-            apt install -y jq
-            echo ""
-        fi
-    fi
-
-    if ! command -v autossh &>/dev/null; then
-        echo -e "\nAutossh is not installed. Installing...\n"
-        if command -v sudo &>/dev/null; then
-            sudo apt update
-            sudo apt install -y autossh
-            echo ""
-        else
-            apt update
-            apt install -y autossh
-            echo ""
-        fi
-    fi
-
-    if ! command -v tmux &>/dev/null; then
-        echo -e "\nTmux is not installed. Installing...\n"
-        if command -v sudo &>/dev/null; then
-            sudo apt update
-            sudo apt install -y tmux
-            echo ""
-        else
-            apt update
-            apt install -y tmux
-            echo ""
-        fi
-    fi
-
+    echo "          Downloading Minecraft Server            "
+    echo "=================================================="
     # Fetch the latest release version from the version manifest
     latest=$(curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' | jq -r '.latest.release')
 
@@ -88,17 +111,13 @@ if [ ! -f "$(pwd)/server.jar" ]; then
             fi
             break
         else
-            read -p "Java is not installed. Do you want to install openjdk-21-jre? (yes/no): " install_java
+            read -p "Java is not installed. Do you want to install java-21-openjdk? (yes/no): " install_java
             case $install_java in
                 [yY][eE][sS])
                     if command -v sudo &>/dev/null; then
-                        sudo apt update -y
-                        sudo apt install openjdk-21-jre -y
-                        echo ""
+                        sudo dnf install java-21-openjdk -y
                     else
-                        apt update -y
-                        apt install openjdk-21-jre -y
-                        echo ""
+                        dnf install java-21-openjdk -y
                     fi
                     ;;
                 [nN][oO])
@@ -225,6 +244,13 @@ else
     read -p "Is the server online (true/false, default: true): " online_mode
     online_mode=${online_mode:-true}
     sed -i "s/^online-mode=.*/online-mode=$online_mode/" server.properties
+
+    read -p "Enter the local port to use for Minecraft server (default: 25565): " local_port
+    local_port=${local_port:-25565}
+    sed -i "s/^server-port=.*/server-port=$local_port/" server.properties
+
+    read -p "Enter the remote port for autossh (default: 0): " remote_port
+    remote_port=${remote_port:-0}
 fi
 
 # Start Minecraft Server
@@ -236,12 +262,11 @@ echo "=================================================="
 echo "            Starting Minecraft Server             "
 echo "=================================================="
 read -p "How much maximum GB of RAM would you like to use for your Minecraft server? (default 1GB, numeric input only): " max_ram
-max_ram=${max_ram:-'1'}
+max_ram=${max_ram:-1}
 echo ""
 
-# Create a tmux session for Minecraft server and auto SSH
 tmux new-session -d -s minecraft "java -Xmx${max_ram}G -Xms1G -jar server.jar nogui"
-tmux split-window -t minecraft "autossh -M 0 -R 0:localhost:25565 serveo.net"
+tmux split-window -t minecraft "autossh -M 0 -R ${remote_port}:localhost:${local_port} serveo.net"
 tmux attach
 
 # Provide feedback on server start
@@ -250,3 +275,4 @@ if [ $? -eq 0 ]; then
 else
     echo -e "\nFailed to start Minecraft server or auto SSH. Check logs for details.\n"
 fi
+
